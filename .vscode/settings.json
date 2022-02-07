@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "gcm.h": "c",
+    "detect_platform.h": "c"
+  }
+}

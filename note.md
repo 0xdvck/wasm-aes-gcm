@@ -8,6 +8,7 @@ Compile command:
 -s EXPORTED_RUNTIME_METHODS="['ccall', 'cwrap']" \
 -s EXPORTED_FUNCTIONS="['_malloc', '_free']" \
 -s ALLOW_MEMORY_GROWTH=1 \
+-s MALLOC=emmalloc \
 -s SINGLE_FILE=1 \
 -o aes-gcm.js
 

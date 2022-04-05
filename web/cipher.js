@@ -2,7 +2,7 @@ class WebCipherGCM {
 	constructor() {}
 
 	static TAG_LENGTH = 16;
-	static OUTPUT_LENGTH = 256;
+	// static OUTPUT_LENGTH = 256;
 	static ENCRYPT = 1;
 	static DECRYPT = 0;
 
@@ -62,16 +62,16 @@ class WebCipherGCM {
 
 		this.pKey = this.lib._malloc(this.keyLength);
 		this.pIv = this.lib._malloc(this.ivLength);
-		this.pOutput = this.lib._malloc(WebCipherGCM.OUTPUT_LENGTH);
 
 		this.lib.HEAPU8.set(key,this.pKey);
 		this.lib.HEAPU8.set(iv, this.pIv);
 	}
 
 	update(input) {
-		//reset output array;
-		this.lib.HEAPU8.set(Uint8Array.from(new Array(WebCipherGCM.OUTPUT_LENGTH).fill(0)));
-		this.lib._update();
+		this._free(this.pOutput);
+
+		this.pOutput = this.lib._malloc(input.byteLength);
+		this.lib.HEAPU8.set(input, pOutput);
 		
 		let pInput = this.lib._malloc(input.byteLength);
 		this.lib.HEAPU8.set(input, pInput);

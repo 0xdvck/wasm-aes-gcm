@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <emscripten.h>
 #include <sanitizer/lsan_interface.h>
 
@@ -25,12 +26,12 @@ extern "C"
 		gcm_start(ctx, mode, iv, iv_len, aad, aad_len);
 	}
 
-	EMSCRIPTEN_KEEPALIVE void update(gcm_context *ctx, uchar *key, size_t key_len, size_t length, uchar *input, uchar *output)
+	EMSCRIPTEN_KEEPALIVE void update(gcm_context *ctx, size_t length, uchar *input, uchar *output)
 	{
 		gcm_update(ctx, length, input, output);
 	}
 
-	EMSCRIPTEN_KEEPALIVE void final(gcm_context *ctx,uchar *key, size_t key_len, uchar *tag, size_t tag_len)
+	EMSCRIPTEN_KEEPALIVE void final(gcm_context *ctx, uchar *tag, size_t tag_len)
 	{
 		gcm_finish(ctx, tag, tag_len);
 		gcm_zero_ctx(ctx);

@@ -68,26 +68,28 @@ class WebCipherGCM {
 	}
 
 	update(input) {
-		this._free(this.pOutput);
+			let pOutput = this.lib._malloc(input.byteLength);
+			this.lib.HEAPU8.set(Uint8Array(new Array(input.byteLength).fill(0)), pOutput);
+			
+			let pInput = this.lib._malloc(input.byteLength);
+			this.lib.HEAPU8.set(input, pInput);
 
-		this.pOutput = this.lib._malloc(input.byteLength);
-		this.lib.HEAPU8.set(input, pOutput);
-		
-		let pInput = this.lib._malloc(input.byteLength);
-		this.lib.HEAPU8.set(input, pInput);
+			this.lib._update(this.pCtx,input.byteLength, pInput, this.pOutput);
 
-		this.lib._update(this.pCtx,this.pKey, this.keyLength, input.byteLength, pInput, this.pOutput);
+			let chunk = new Uint8Array(this.lib.HEAPU8.buffer, pOutput, input.byteLength);
+			
+			this.lib._free(pInput);
+			this.lib._free(pOutput);
 
-		this.lib._free(pInput);
-		return Uint8Array.from(new Uint8Array(this.lib.HEAPU8.buffer, this.pOutput, input.byteLength));
+			return Uint8Array.from(chunk);
 	}
 
 	final() {
-		this.lib._final(this.pCtx,this.pKey, this.keyLength, this.pTag, this.tagLength);
+		this.lib._final(this.pCtx, this.pTag, this.tagLength);
 	}
 
 	clean() {
-		[this.pCtx,this.pIv,this.pKey,this.pOutput,this.pTag].forEach(ptr => this.lib._free(ptr));
+		[this.pCtx,this.pIv,this.pKey,this.pTag].forEach(ptr => this.lib._free(ptr));
 	}
 
 	getAuthTag() {

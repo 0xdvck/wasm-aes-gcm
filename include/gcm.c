@@ -316,7 +316,7 @@ int gcm_start( gcm_context *ctx,    // pointer to user-provided GCM context
  ******************************************************************************/
 int gcm_update( gcm_context *ctx,       // pointer to user-provided GCM context
                 size_t length,          // length, in bytes, of data to process
-                const uchar *input,     // pointer to source data
+                uchar *input,     // pointer to source data
                 uchar *output )         // pointer to destination data
 {
     int ret;            // our error return if the AES encrypt fails
